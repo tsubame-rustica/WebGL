@@ -14,6 +14,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
+// カメラの初期位置
 camera.position.x = 0;
 camera.position.y = 0;
 camera.position.z = 70;
@@ -21,8 +22,8 @@ camera.position.z = 70;
 // Load a glTF resource
 const loader = new GLTFLoader();
 loader.load(
-    // resource URL
-    '/public/bus_stop.glb',
+    // 読み込むglbファイルのパス
+    '/public/fes.glb',
     // called when the resource is loaded
     function ( gltf ) {
 
@@ -49,10 +50,11 @@ loader.load(
     }
 );
 
+
 function animate() {
-    requestAnimationFrame(animate);
-    camera.rotation.x = 0.5;
-    camera.rotation.y += 1;
+    requestAnimationFrame(animate); // アニメーションを更新
+    camera.position.y = 0.05;
+    // camera.rotation.y = 1;
     renderer.render(scene, camera);
 }
 
