@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スマートフォンの角度表示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .angle-display {
+            font-size: 1.5em;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>スマートフォンの角度</h1>
+    <div class="angle-display" id="alpha">アルファ (α): 0</div>
+    <div class="angle-display" id="beta">ベータ (β): 0</div>
+    <div class="angle-display" id="gamma">ガンマ (γ): 0</div>
+
+        <button id="btn">モーションセンサーの許可を取得</button>
+        <h1 id="res"></h1>
+    <script>
+        document.getElementById('btn').addEventListener('click', () => {
+        if (window.DeviceMotionEvent && window.DeviceMotionEvent.requestPermission) {
+            DeviceMotionEvent.requestPermission()
+                            .then((state) => {
+                            if (state === 'granted') {
+                                // パーミッションを取れた際の処理
+                                document.getElementById('res').textContent = 'モーションセンサーの許可を取得しました';
+                                window.location.reload();
+                            } else {
+                                // パーミッションを取れなかった際の処理
+                                document.getElementById('res').textContent = 'モーションセンサーの許可を取得できませんでした';
+                            }
+                            })
+                            .catch((err) => console.error(err));
+        } else {
+            // window.DeviceMotionEvent.requestPermissionが無いブラウザでの処理
+            console.error('DeviceMotionEvent APIが使えません');
+            document.getElementById('res').textContent = 'DeviceMotionEvent APIが使えません';
+        }
+        });
+
+        function handleOrientation(event) {
+            document.getElementById('alpha').textContent = 'アルファ (α): ' + event.alpha.toFixed(2);
+            document.getElementById('beta').textContent = 'ベータ (β): ' + event.beta.toFixed(2);
+            document.getElementById('gamma').textContent = 'ガンマ (γ): ' + event.gamma.toFixed(2);
+        }
+
+        function requestDeviceOrientation() {
+            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                DeviceMotionEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation, true);
+                        } else {
+                            alert("デバイスのモーションセンサーへのアクセスが拒否されました。");
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                window.addEventListener('deviceorientation', handleOrientation, true);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            requestDeviceOrientation();
+        });
+    </script>
+</body>
+</html>
