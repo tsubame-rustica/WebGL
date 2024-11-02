@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="stylesheet" href="src/admin.css">
+    <title>管理者用サイト</title>
+</head>
+<body>
+    <button type="button" id="showModalBtn">スタートする</button>
+    <div id="confirm">
+        <div id="confirm-inner">
+            <label class="checkbox"><input type="checkbox" name="" id="confirm-check">安全を確認したうえで開始してください</label>
+            <br>
+            <button type="button" id="cancelBtn" class="cancel">キャンセル</button>
+            <button type="button" id="startBtn" class="confirm" disabled>スタート</button>
+        </div>
+    </div>
+</body>
+<script type="module" src="/src/admin.js"></script>
+</html>

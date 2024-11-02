@@ -1,0 +1,58 @@
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+#confirm {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+#confirm-inner {
+    width: 60%;
+    height: 60%;
+    background-color: #fff;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "checkbox checkbox"
+      "cancel confirm";
+    justify-items: center;
+    align-items: center;
+}
+
+.checkbox { grid-area: checkbox; }
+
+.cancel { 
+    grid-area: cancel; 
+    background-color: rgb(201, 65, 65);
+    border: solid 1px rgb(148, 54, 54);
+}
+
+.confirm { 
+    grid-area: confirm; 
+    background-color: rgb(37, 139, 37);
+    border: solid 1px rgb(19, 80, 19);
+}
+
+#confirm-inner button {
+    height: 75%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    color: #fff;
+}
+
+button:disabled {
+    background-color: #b1b1b1;
+    border: #787878 solid .5px;
+}

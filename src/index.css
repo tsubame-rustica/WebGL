@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap');
+
+body {
+  background-image: url(/src/tos-bg.png);
+  background-size: 120% 120%;
+  background-position: center;
+  margin: 0;
+}
+
+#gyro {
+  position: absolute;
+}
+
+.tos-outer {
+  position: absolute;
+  display: flex;
+  width: 100svw;
+  height: 100svh;
+  height: -webkit-fill-available;
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.tos {
+  display: flex;
+  font-family: "Noto Sans JP", sans-serif;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 80%;
+  height: 80%;
+  color: #fff;
+  background-color: #321a4270;
+  border: #7636ca solid 2px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tos h1 {
+  margin: 0.5rem;
+}
+
+.tos .tos-contents {
+  width: 90%;
+  height: 50%;
+  margin: 0% 5%;
+  overflow-y: scroll;
+}
+
+.tos-outer::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100svw;
+  height: 100vh;
+  height: -webkit-fill-available;
+  background-image: url(/src/tos-bg.png);
+  background-size: 120% 120%;
+  background-position: center;
+  z-index: -1;
+}
+
+.confirm-btn {
+  display: flex;
+  width: auto;
+  height: auto;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.confirm-btn button {
+  background-color: #8d5ecbb5;
+  color: #fff;
+  border: #864ad4 solid .5px;
+  margin-bottom: 1rem;
+}
+
+.confirm-btn button:disabled {
+  background-color: #b1b1b1;
+  border: #787878 solid .5px;
+}
+
+.confirm-btn label {
+  margin-bottom: .5rem;
+}
+
+
+#showProgressBar {
+  position: absolute;
+  width: 100svw;
+  height: 100svh;
+  background-color: #50505056;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#text {
+  font-size: 4rem;
+  color: #fff;
+}
+
+#progressBar {
+  width: 60%;
+  height: 5%;
+  border: solid 1px #2b005c;
+  background-color: #6b6b6b;
+  border-radius: 9999px;
+}
+
+#progress {
+  width: 0%;
+  height: 100%;
+  background-color: #7636ca;
+  border-radius: 9999px;
+}
+
+#coupon {
+  display: none;
+  width: 100%;
+  height: 100svh;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 80%;
+  aspect-ratio: 16 / 9;
+  background-image: url(./end2.jpg);
+  background-size: 100% 100%;
+}
