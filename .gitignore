@@ -1,0 +1,6 @@
+*.org
+src/main.js
+src/end*.png
+src/*.jpg
+dist/
+public/*.glb
