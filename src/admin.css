@@ -1,7 +1,10 @@
 body {
     width: 100%;
-    height: 100%;
+    height: 100svh;
     margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #confirm {
@@ -55,4 +58,9 @@ body {
 button:disabled {
     background-color: #b1b1b1;
     border: #787878 solid .5px;
+}
+
+#showModalBtn {
+    width: 50%;
+    aspect-ratio: 2/1;
 }

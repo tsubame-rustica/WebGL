@@ -3,40 +3,32 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { StereoEffect } from 'three/examples/jsm/effects/StereoEffect.js';
 
-
-
-window.addEventListener("load", function() {
-
-    const confirmCeckbox = document.getElementById("tos-confirm");
-    let nextBtn = document.getElementById("cookieConfirm");
-    confirmCeckbox.addEventListener("change", function () {
-        nextBtn.disabled = !confirmCeckbox.checked;
-    })
-});
-
-// ローディング中の進捗バー用
 const progressParent = document.getElementById('showProgressBar');
 const progress = document.getElementById('progress');
 
 const pi = Math.PI;
 
-/**
- * 基準となるスピード
- * @type {Number}
- */
+// 速度の既定値
 const defaultSpeed = 0.25;
+// 1回で動かす角度の既定値
 const defaultDeg = pi / 180 * defaultSpeed;
 
-/**
- * アニメーションを管理する変数
- * @type {Number}
- */
+// threeの設定用変数
+let scene, camera, light, renderer, effect; 
+
+let pos, rote;
 let step = 0;
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
-const light = new THREE.DirectionalLight(0xffffff, 1.0);
-const renderer = new THREE.WebGLRenderer();
+// 機体（仮想）の角度
+let roteY = 0;
+
+// 上下の動きの切り替え
+let upAndDownStep = 0;
+
+scene = new THREE.Scene();  
+camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
+light = new THREE.DirectionalLight(0xffffff, 1.0);
+renderer = new THREE.WebGLRenderer();
 
 scene.add(light);
 
@@ -46,28 +38,14 @@ document.body.appendChild( renderer.domElement );
 const effect = new StereoEffect(renderer);
 effect.setSize(window.innerWidth, window.innerHeight);
 
-
-/**
- * カメラの位置
- * **弧度法であることに注意**
- * @param {Number} x    rad
- * @param {Number} y    rad
- * @param {Number} z    rad
- */
 const pos = camera.position;
-
-/**
- * カメラの角度
- * **弧度法であることに注意**
- * @param {Number} x    rad
- * @param {Number} y    rad
- * @param {Number} z    rad
- */
 const rote = camera.rotation;
 
 pos.x = 0;
 pos.y = 0;
 pos.z = 0;
+
+// カメラの初期角度(rad)
 rote.y = pi / -2;
 
 
@@ -93,15 +71,6 @@ progressParent.style.display = "flex";
 const loaderGLTF = new GLTFLoader();
 loadField(loaderGLTF);
 
-/**
- * 機体（仮想）の向き
- */
-let roteY = 0;
-
-// 上下の移動を切り替える関数(step == 8)
-let upDownStep = 0;
-
-// アニメーションを実行する関数
 function animate() {
     requestAnimationFrame(animate);
 
@@ -130,78 +99,77 @@ function animate() {
         step = 11;
     } else if (roteY >= 0 && step == 11) {
         step = 12;
-    } else if (roteY >= pi / 6 && step == 12) {
+    } else if (roteY >= pi / 8 && step == 12) {
         step = 13;
     } else if (pos.x >= 800 && step == 13) {
+        animationEnd();
         return;
     }
 
-    // カメラの角度を調整する
-    if (step == 0) {
+    if (step === 0) {
         rote.y = roteY - pi / 2;
-    } else if (step == 1) {        // 45degまで右旋回
+    } else if (step === 1) {        // 45degまで右旋回
         roteY = roteY + defaultDeg;
         rote.y = roteY - pi / 2;
-    } else if (step == 2) {
+    } else if (step === 2) {
         rote.y = roteY - pi / 2;
-    } else if (step == 3) {
+    } else if (step === 3) {
         roteY = roteY - defaultDeg;
         rote.y = roteY - pi / 2;
         if (pos.y < 10) {
             rote.x += defaultDeg;
             pos.y += defaultSpeed;
         }
-    } else if (step == 4) {
+    } else if (step === 4) {
         rote.y += defaultDeg * 2.8;
         if (pos.y > 0) {
             rote.x -= defaultDeg;
             pos.y -= defaultSpeed;
         }
-    } else if (step == 5) {
+    } else if (step === 5) {
         roteY = roteY + defaultDeg;
         rote.y = roteY + pi / 6;
-    } else if (step == 6) {
+    } else if (step === 6) {
         roteY = roteY + defaultDeg;
         rote.y -= defaultDeg * 3.5;
         if (rote.y >= pi * 2 / 3) {
             rote.y = pi * 2 / 3;
         }
-    } else if (step == 8) {
-        if (upDownStep == 0) {
+    } else if (step === 8) {
+        if (upAndDownStep === 0) {
             pos.y += defaultSpeed
-        } else if (upDownStep == 1) {
+        } else if (upAndDownStep === 1) {
             pos.y -= defaultSpeed
         }
-        if (pos.y >= 15 && upDownStep == 0) {
-            upDownStep = 1;
-        } else if (pos.y < 0 && upDownStep == 1) {
-            upDownStep = 2;
+        
+        if (pos.y >= 15 && upAndDownStep === 0) {
+            upAndDownStep = 1;
+        } else if (pos.y < 0 && upAndDownStep === 1) {
+            upAndDownStep = 2;
             pos.y = 0;
         }
-    } else if (step == 9) {
+    } else if (step === 9) {
         roteY = roteY - defaultDeg;
         rote.y = roteY - pi / 2;
-    } else if (step == 10) {
+    } else if (step === 10) {
         rote.y += defaultDeg * 5;
-    } else if (step == 11) {
+    } else if (step === 11) {
         roteY = roteY + defaultDeg;
         rote.y = roteY + pi / 6;
-    } else if (step == 12) {
+    } else if (step === 12) {
         roteY = roteY + defaultDeg;
         rote.y -= defaultDeg * 3.5;
         if (rote.y >= pi * 2 / 3) {
             rote.y = pi * 2 / 3;
         }
     }
-    
-    // どれだけ進むかを三角関数で計算
     pos.x = pos.x + defaultSpeed * Math.cos(roteY);
     pos.z = pos.z - defaultSpeed * Math.sin(roteY);
 
-    effect.render(scene, camera);
+    effect.render(scene, camera);  // StereoEffectでレンダリング
 }
 
-
+// ウィンドウリサイズ時の処理
 window.addEventListener('resize', onWindowResize, false);
 
 // スクリーンをリサイズする関数
@@ -211,13 +179,22 @@ function onWindowResize() {
   effect.setSize(window.innerWidth, window.innerHeight);
 }
 
-// glbファイルを読み込む関数
+
+// VR終了時
+function animationEnd() {
+    const cardOuter = document.getElementById("cardOuter");
+    const canvas = document.querySelectorAll("canvas");
+    canvas[0].style.display = "none";
+    cardOuter.style.display = "flex";
+}
+
 function loadField(loaderGLTF) {
     loaderGLTF.load(
+        // 読み込むglbファイルのパス　ルートはpublic
         '/star15.glb',
-        function ( gltf ) {
 
-            // ワールドをthreejsに表示
+        // ロードされた時
+        function ( gltf ) {
             scene.add( gltf.scene );
 
             gltf.animations;
@@ -225,10 +202,11 @@ function loadField(loaderGLTF) {
             gltf.scenes;
             gltf.cameras;
             gltf.asset;
-
         },
-        // called while loading is progressing
+
+        // ロード中
         function ( xhr ) {
+            // ローディングの進捗バーを表示
             console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
             //　進捗バーをWebに表示
             progress.style.width = ( xhr.loaded / xhr.total * 100 ) + '%';
@@ -237,9 +215,10 @@ function loadField(loaderGLTF) {
                 animate();  // glbファイルのロードが終わったらアニメーションを開始
             }
         },
-        // called when loading has errors
+
+        // エラー発生時
         function ( error ) {
-            console.log(error);
+            console.log( error );
         }
     );
 }
