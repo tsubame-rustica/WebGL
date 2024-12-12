@@ -35,13 +35,12 @@ scene.add(light);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild( renderer.domElement );
 
-effect = new StereoEffect(renderer);
+const effect = new StereoEffect(renderer);
 effect.setSize(window.innerWidth, window.innerHeight);
 
-pos = camera.position;
-rote = camera.rotation;
+const pos = camera.position;
+const rote = camera.rotation;
 
-// カメラの初期位置
 pos.x = 0;
 pos.y = 0;
 pos.z = 0;
@@ -50,7 +49,7 @@ pos.z = 0;
 rote.y = pi / -2;
 
 
-// skyboxの設定
+// スカイボックス（ワールドの背景）の設定
 const loaderSkyBox = new THREE.CubeTextureLoader();
 const texture = loaderSkyBox.load([
     '/skybox/CosmicCoolCloudLeft.png',
@@ -66,14 +65,16 @@ scene.background = texture;
 // 霧の追加
 scene.fog = new THREE.Fog(0x000000, 50, 2000);
 
-// Load a glTF resource
 progressParent.style.display = "flex";
 
+// GLTFローダーを読み込み
 const loaderGLTF = new GLTFLoader();
 loadField(loaderGLTF);
 
 function animate() {
     requestAnimationFrame(animate);
+
+    // stepを管理する変数
     if (pos.x >= 100 && step == 0) {
         step = 1;
     } else if (roteY >= pi / 4 && step == 1) {
@@ -107,7 +108,7 @@ function animate() {
 
     if (step === 0) {
         rote.y = roteY - pi / 2;
-    } else if (step === 1) { // 45degまで右旋回
+    } else if (step === 1) {        // 45degまで右旋回
         roteY = roteY + defaultDeg;
         rote.y = roteY - pi / 2;
     } else if (step === 2) {
@@ -134,35 +135,34 @@ function animate() {
         if (rote.y >= pi * 2 / 3) {
             rote.y = pi * 2 / 3;
         }
-    } else if (step == 8) {
-        if (upAndDownStep == 0) {
+    } else if (step === 8) {
+        if (upAndDownStep === 0) {
             pos.y += defaultSpeed
-        } else if (upAndDownStep == 1) {
+        } else if (upAndDownStep === 1) {
             pos.y -= defaultSpeed
         }
         
-        if (pos.y >= 15 && upAndDownStep == 0) {
+        if (pos.y >= 15 && upAndDownStep === 0) {
             upAndDownStep = 1;
-        } else if (pos.y < 0 && upAndDownStep == 1) {
+        } else if (pos.y < 0 && upAndDownStep === 1) {
             upAndDownStep = 2;
             pos.y = 0;
         }
-    } else if (step == 9) {
+    } else if (step === 9) {
         roteY = roteY - defaultDeg;
         rote.y = roteY - pi / 2;
-    } else if (step == 10) {
+    } else if (step === 10) {
         rote.y += defaultDeg * 5;
-    } else if (step == 11) {
+    } else if (step === 11) {
         roteY = roteY + defaultDeg;
         rote.y = roteY + pi / 6;
-    } else if (step == 12) {
+    } else if (step === 12) {
         roteY = roteY + defaultDeg;
         rote.y -= defaultDeg * 3.5;
         if (rote.y >= pi * 2 / 3) {
             rote.y = pi * 2 / 3;
         }
     }
-
     pos.x = pos.x + defaultSpeed * Math.cos(roteY);
     pos.z = pos.z - defaultSpeed * Math.sin(roteY);
 
@@ -172,6 +172,7 @@ function animate() {
 // ウィンドウリサイズ時の処理
 window.addEventListener('resize', onWindowResize, false);
 
+// スクリーンをリサイズする関数
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
@@ -207,10 +208,11 @@ function loadField(loaderGLTF) {
         function ( xhr ) {
             // ローディングの進捗バーを表示
             console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            //　進捗バーをWebに表示
             progress.style.width = ( xhr.loaded / xhr.total * 100 ) + '%';
             if (xhr.loaded / xhr.total * 100 >= 100) {
                 progressParent.style.display = "none";
-                animate();
+                animate();  // glbファイルのロードが終わったらアニメーションを開始
             }
         },
 
