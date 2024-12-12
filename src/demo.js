@@ -3,34 +3,29 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { StereoEffect } from 'three/examples/jsm/effects/StereoEffect.js';
 
-
-
-window.addEventListener("load", function() {
-
-    const confirmCeckbox = document.getElementById("tos-confirm");
-    let nextBtn = document.getElementById("cookieConfirm");
-    confirmCeckbox.addEventListener("change", function () {
-        nextBtn.disabled = !confirmCeckbox.checked;
-    })
-});
-
-
 const progressParent = document.getElementById('showProgressBar');
 const progress = document.getElementById('progress');
 
 const pi = Math.PI;
 
+// 速度の既定値
 const defaultSpeed = 0.25;
+// 1回で動かす角度の既定値
 const defaultDeg = pi / 180 * defaultSpeed;
 
-let scene, camera, light, renderer, effect; // threeの設定用変数
+// threeの設定用変数
+let scene, camera, light, renderer, effect; 
+
 let pos, rote;
 let step = 0;
 
+// 機体（仮想）の角度
+let roteY = 0;
 
-let vehicle;
+// 上下の動きの切り替え
+let upAndDownStep = 0;
 
-scene = new THREE.Scene();
+scene = new THREE.Scene();  
 camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
 light = new THREE.DirectionalLight(0xffffff, 1.0);
 renderer = new THREE.WebGLRenderer();
@@ -46,10 +41,12 @@ effect.setSize(window.innerWidth, window.innerHeight);
 pos = camera.position;
 rote = camera.rotation;
 
-// カメラの初期位置(rad)
+// カメラの初期位置
 pos.x = 0;
 pos.y = 0;
 pos.z = 0;
+
+// カメラの初期角度(rad)
 rote.y = pi / -2;
 
 
@@ -74,11 +71,6 @@ progressParent.style.display = "flex";
 
 const loaderGLTF = new GLTFLoader();
 loadField(loaderGLTF);
-
-let roteY = 0;
-let xzStep;
-cStep = 0;
-xzStep = 0;
 
 function animate() {
     requestAnimationFrame(animate);
@@ -106,12 +98,12 @@ function animate() {
         step = 11;
     } else if (roteY >= 0 && step == 11) {
         step = 12;
-    } else if (roteY >= pi / 6 && step == 12) {
+    } else if (roteY >= pi / 8 && step == 12) {
         step = 13;
     } else if (pos.x >= 800 && step == 13) {
+        animationEnd();
         return;
     }
-
 
     if (step === 0) {
         rote.y = roteY - pi / 2;
@@ -123,12 +115,10 @@ function animate() {
     } else if (step === 3) {
         roteY = roteY - defaultDeg;
         rote.y = roteY - pi / 2;
-
         if (pos.y < 10) {
             rote.x += defaultDeg;
             pos.y += defaultSpeed;
         }
-
     } else if (step === 4) {
         rote.y += defaultDeg * 2.8;
         if (pos.y > 0) {
@@ -144,19 +134,17 @@ function animate() {
         if (rote.y >= pi * 2 / 3) {
             rote.y = pi * 2 / 3;
         }
-    } else if (step == 7) {
-
     } else if (step == 8) {
-        if (xzStep == 0) {
+        if (upAndDownStep == 0) {
             pos.y += defaultSpeed
-        } else if (xzStep == 1) {
+        } else if (upAndDownStep == 1) {
             pos.y -= defaultSpeed
         }
         
-        if (pos.y >= 15 && xzStep == 0) {
-            xzStep = 1;
-        } else if (pos.y < 0 && xzStep == 1) {
-            xzStep = 2;
+        if (pos.y >= 15 && upAndDownStep == 0) {
+            upAndDownStep = 1;
+        } else if (pos.y < 0 && upAndDownStep == 1) {
+            upAndDownStep = 2;
             pos.y = 0;
         }
     } else if (step == 9) {
@@ -173,16 +161,15 @@ function animate() {
         if (rote.y >= pi * 2 / 3) {
             rote.y = pi * 2 / 3;
         }
-    } else if (step == 13) {
-
     }
-    
 
     pos.x = pos.x + defaultSpeed * Math.cos(roteY);
     pos.z = pos.z - defaultSpeed * Math.sin(roteY);
 
-    effect.render(scene, camera);
+    effect.render(scene, camera);  // StereoEffectでレンダリング
 }
+
+// ウィンドウリサイズ時の処理
 window.addEventListener('resize', onWindowResize, false);
 
 function onWindowResize() {
@@ -191,35 +178,45 @@ function onWindowResize() {
   effect.setSize(window.innerWidth, window.innerHeight);
 }
 
+
+// VR終了時
+function animationEnd() {
+    const cardOuter = document.getElementById("cardOuter");
+    const canvas = document.querySelectorAll("canvas");
+    canvas[0].style.display = "none";
+    cardOuter.style.display = "flex";
+}
+
 function loadField(loaderGLTF) {
     loaderGLTF.load(
+        // 読み込むglbファイルのパス　ルートはpublic
         '/star15.glb',
-        function ( gltf ) {
 
+        // ロードされた時
+        function ( gltf ) {
             scene.add( gltf.scene );
 
-            gltf.animations; // Array<THREE.AnimationClip>
-            gltf.scene; // THREE.Group
-            gltf.scenes; // Array<THREE.Group>
-            gltf.cameras; // Array<THREE.Camera>
-            gltf.asset; // Object
-
+            gltf.animations;
+            gltf.scene;
+            gltf.scenes;
+            gltf.cameras;
+            gltf.asset;
         },
-        // called while loading is progressing
-        function ( xhr ) {
 
+        // ロード中
+        function ( xhr ) {
+            // ローディングの進捗バーを表示
             console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
             progress.style.width = ( xhr.loaded / xhr.total * 100 ) + '%';
             if (xhr.loaded / xhr.total * 100 >= 100) {
                 progressParent.style.display = "none";
                 animate();
             }
-
         },
-        // called when loading has errors
+
+        // エラー発生時
         function ( error ) {
-
-
+            console.log( error );
         }
     );
 }

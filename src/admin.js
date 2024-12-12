@@ -18,7 +18,7 @@ confirmCeckbox.addEventListener("change", function () {
 
 const fetchData = async () => {
     try {
-      const response = await fetch('https://yourdomain/api/execute-app', {
+      const response = await fetch('https://yourdomain.com/api/execute-app', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,15 +34,11 @@ const fetchData = async () => {
       }
   
       const result = await response.json();  // 成功時のデータ取得
-      console.log("response");
-      console.log(result);
     } catch (error) {
-      console.log("error");
       console.error('Error fetching data:', error);
     }
 };
 
 startBtn.addEventListener("click", function () {
     fetchData();
-})
-
+});

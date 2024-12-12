@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap');
 
 body {
-  background-image: url(/src/tos-bg.png);
+  background-image: url(/src/default-bg.png);
   background-size: 120% 120%;
   background-position: center;
   margin: 0;
@@ -56,7 +56,7 @@ body {
   width: 100svw;
   height: 100vh;
   height: -webkit-fill-available;
-  background-image: url(/src/tos-bg.png);
+  background-image: url(/src/default-bg.png);
   background-size: 120% 120%;
   background-position: center;
   z-index: -1;
@@ -119,7 +119,7 @@ body {
   border-radius: 9999px;
 }
 
-#coupon {
+#cardOuter {
   display: none;
   width: 100%;
   height: 100svh;
@@ -128,8 +128,9 @@ body {
 }
 
 .card {
-  width: 80%;
-  aspect-ratio: 16 / 9;
-  background-image: url(./end2.jpg);
-  background-size: 100% 100%;
+  width: 100%;
+  height: 100%;
+  background-image: url(./end.png);
+  background-size: cover;
+  background-position: right;
 }
