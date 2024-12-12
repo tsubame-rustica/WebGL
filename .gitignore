@@ -1,6 +1,5 @@
 *.org
-src/main.js
-src/end*.png
+*.old
+src/*.old
 src/*.jpg
 dist/
-public/*.glb
