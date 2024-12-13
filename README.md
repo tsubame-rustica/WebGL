@@ -1,11 +1,49 @@
-# Three.js・expressを用いたWebVRコンテンツ制作
+# Three.js・expressを用いたWebVRコンテンツアプリケーション
 
 ## 概要
 - VRアトラクション用に作成されたアプリケーション
-- `index.html`のGETパラーメータである`id`の値を使用することで、特定の`id`を持つ`index.html`を開いているユーザーにのみVRを開始できる
-- `qr-generate.html`では`server.js`にリクエストを送信してデータベースに登録しidを取得  
-取得したidがGETパラメータに含まれたURLをQRコードにして表示する
-- `admin.html`でスタートボタンを押すと特定の`id`を持つ`index.html`のVRを開始することができる
+
+- VRコンテンツのページ(index.html)
+   - WebVRコンテンツを再生するためのページ
+
+   - URLにidを持たせることで特定のユーザーのみにVRコンテンツを再生することができる
+
+   - blenderで作成したワールドをThreejsで読み込んで表示している
+
+   - 事前にデータの読み込みを行い、バックエンドに定期的に問い合わせをして自身のステータスが「進行中」になるとVRコンテンツが開始する
+
+- 受付用ページ(qr-generate.html)
+
+   - 利用者にQRコードを読み込んでもらいVRコンテンツのページに遷移してもらうためのページ
+
+   - サーバーからデータベースに情報を登録しidを取得する
+
+   - 取得したidをGETパラメータに持つVRコンテンツのページのURLをQRコードとして表示して利用者に遷移してもらう
+
+- 管理者用ページ(admin.html)
+
+   - 特定のユーザーのVRコンテンツを再生するためのページ
+
+   - スタートボタンを押すと開始を待っている利用者のステータスを進行中に変更する
+
+- サーバー(server.js)
+
+   - expressを使用している
+
+   - pm2で常時実行
+
+   - 主な役割はデータベースと通信し、利用者のステータスを書き換えたり確認して値を返したりすることである
+
+相関図
+   ![相関図](https://github.com/user-attachments/assets/881c67d4-b2f9-4a14-9ada-7a361a703772)
+
+
+## データベース
+|カラム名|型|説明|
+|-----------|-----------|-|
+|id         |int        |VRアトラクションを管理する用（登録時に自動で付与）|
+|state      |varchar(50)|登録されたidのVRの稼働状態（waiting, inProgress, complete）|
+|startTime  |time       |登録されたidのVRの開始時間|
 
 ## 環境
 - VPSサーバー（Ubuntu）- XVPS
@@ -18,7 +56,6 @@
 #### フロントエンド
 - three
 - qrcode
-- js-cookie
 
 #### サーバーサイド
 - express
@@ -100,12 +137,3 @@ nvm install --lts
    ```sh
    pm2 stop アプリ名
    ```
-
-
-
-## データベース
-|カラム名|型|説明|
-|-----------|-----------|-|
-|id         |int        |VRアトラクションを管理する用（登録時に自動で付与）|
-|state      |varchar(50)|登録されたidのVRの稼働状態（waiting, inProgress, complete）|
-|startTime  |time       |登録されたidのVRの開始時間|
