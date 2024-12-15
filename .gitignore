@@ -1,6 +1,4 @@
 *.org
-*.old
-src/*.old
 src/*.jpg
 dist/
 node_modules/
