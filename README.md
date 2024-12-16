@@ -57,8 +57,8 @@
 |カラム名|型|説明|
 |-----------|-----------|-|
 |id         |int        |VRアトラクションを管理する用（登録時に自動で付与）|
-|state      |varchar(50)|登録されたidのVRの稼働状態（waiting, inProgress, complete）|
-|startTime  |time       |登録されたidのVRの開始時間|
+|state      |varchar(50)|登録されたidのVRコンテンツの稼働状態（waiting, inProgress, complete）|
+|startTime  |time       |登録されたidのVRコンテンツの開始時間|
 
 ## 環境
 
